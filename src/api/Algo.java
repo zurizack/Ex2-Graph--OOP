@@ -2,16 +2,11 @@ package api;
 
 import java.io.*;
 import java.util.*;
-
-import api.Graph;
-import api.DirectedWeightedGraph;
-import com.google.gson.*;
-import org.w3c.dom.Node;
-
 import java.util.List;
+import com.google.gson.*;
 
 public class Algo implements DirectedWeightedGraphAlgorithms {
-    public DirectedWeightedGraph graph;
+    private DirectedWeightedGraph graph;
 
     public Algo() {
         graph = new Graph();
@@ -48,50 +43,6 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
         }
         return BFSalgo(node);
     }
-
-//    public boolean BFSalgo(NodeData srcNode) {
-//        /***
-//         * קודם כל מסמנת את כולם להיות -1 שנדע שלא עברנו על האףד אחד 1)
-//         * עושה תור כדי שנכניס לשם כל פעם את היעדים של המקור הנוכחי שעליו אנחנו עומדים2)
-//         * אני מכניסה את המקור הראשון לתוך התור כדי שיהיה שם משהו שנוכל להיכנס ללולאה ולהמשיך את הפעולה3)
-//         * בודקים האם המקור של הצלע הוא המקור של הקודקוד שקיבלנו4)
-//         *בודקים אם יש לו יעדים וגם שהסימונים שלהם הוא לא 1(כי אז זה אומר שכבר עברנו עליו ) ומוסיפים אותם לתור5)
-//         *  הוספנו אותם לתור כדי שכל פעם נוציא איבר והוא יהיה הSRC הבא בתור. על מנת שנוכל לעשות את אותו הדבר(לשלוף למקור שהיה יעד ,את היעדים שלו)6)
-//         *  שינינו את הטג של המקור הראשון להיות אחד כדי להראות שעברנו עלין 7)
-//         *  עדכנו שהמקור החדש הוא האיבר שאנחנו  מוציאים מהתור 8)
-//         *  הכנסנו אותו להיות טמפ וספרנו בקאונט 9)
-//         *  בסוף זה אמור לספור את כל הקודקוד ולהשוות לגודל הגרף אם זה שווה הוא יחזיר אמת10)
-//         */
-//        int count = 0;
-//        srcNode.setTag(-1);
-//        NodeData temp = srcNode;
-//        for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
-//            NodeData n = it.next();
-//            n.setTag(-1);
-//        }
-//        Queue<NodeData> queue = new LinkedList<NodeData>();
-//        queue.add(srcNode);
-//        while (!queue.isEmpty()) {
-//            for (Iterator<EdgeData> edge = this.graph.edgeIter(srcNode.getKey()); edge.hasNext(); ) {
-//                EdgeData p = edge.next();
-//                if (this.graph.getNode(p.getDest()).getTag() != 1) {
-//                    System.out.println("The src node is: " + srcNode.getKey());
-//                    System.out.println("The dest node is: " + p.getDest());
-//                    queue.add(this.graph.getNode(p.getDest()));
-//                    if (this.graph.getNode(srcNode.getKey()).getTag() != 1) {
-//                        srcNode.setTag(1);
-//                        System.out.println("The tag of src is: "+srcNode.getTag());
-//                        count++;
-//                    }
-//                }
-//            }
-//            srcNode = queue.remove();
-//
-//
-//        }
-//        System.out.println("The count is " + count);
-//        return count == graph.nodeSize();
-//    }
 
     public boolean BFSalgo(NodeData srcNode) {
         for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
@@ -169,55 +120,6 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
         return -1;
     }
 
-    public int dijkstra(NodeData srcNode) {
-        //this will be the lowest cost in a specific moment
-        double tempWeight = 0;
-        //this Queue will hold the vertex to check their weight
-        PriorityQueue<NodeData> neighborQueue = new PriorityQueue<NodeData>(new CompereVertexWeight());
-        /*
-         *run on all the vertex with the iterator
-         * set their info to be empty becuse their we init the father vertex key
-         *  set tag to be -1 to know if we path their allready
-         *  set weight to 0 for the beginning becuse we will add the edge weight with the weight till their
-         */
-        for (Iterator<NodeData> it = graph.nodeIter(); it.hasNext(); ) {
-            NodeData e = it.next();
-            e.setWeight(Integer.MAX_VALUE);
-            e.setTag(-1);
-            e.setInfo("");
-        }
-        //set the src data for beginning and add him to Queue
-        if (graph.getNode(srcNode.getKey()) != null) {
-            srcNode.setWeight(0);
-            srcNode.setInfo("" + srcNode.getKey());
-            srcNode.setTag(1);
-            neighborQueue.add(srcNode);
-        }
-        //if we didnt finish to run on all the vertex in the gragh
-        while (!neighborQueue.isEmpty()) {
-            //the curent veretex that we check all his next stop we run on all the edge are go out from him
-            NodeData curentVertex = neighborQueue.poll();
-            for (Iterator<EdgeData> it = graph.edgeIter(curentVertex.getKey()); it.hasNext(); ) {
-                EdgeData e = it.next();
-                //save the dest vertex just for easy syntax to write
-                NodeData dstVertex = graph.getNode(e.getDest());
-                //this is the weigt till we get to this vertex + the edge weight
-                tempWeight = curentVertex.getWeight() + e.getWeight();
-                /*
-                 *we check if allready check this vertex or the weight in last time we check cost more than this path
-                 */
-                if (dstVertex.getTag() < 0 || tempWeight < dstVertex.getWeight()) {
-                    neighborQueue.add(dstVertex);
-                    dstVertex.setInfo("" + curentVertex.getKey());
-                    dstVertex.setWeight(tempWeight);
-                    dstVertex.setTag(1);
-                }
-            }
-        }
-        return 0;
-    }
-
-
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
         //create the list where we add the road and return it in the end
@@ -242,10 +144,12 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
             try {
                 //go back from dest to src by the info because the dijkstra save there the father node every time
                 //and add it to the stack
+
                 while (graph.getNode(src) != destNode) {
                     temp.add(destNode);
                     destNode = graph.getNode(Integer.parseInt(destNode.getInfo()));
                 }
+                temp.add(graph.getNode(src));
 
             }
             //try to catch an eror with the casting to int from string
@@ -268,68 +172,45 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public NodeData center() {
-        double minPath = Integer.MAX_VALUE;
-        NodeData answer = null;
-        DirectedWeightedGraph g = new Graph();
-//        Queue<NodeData> q = new LinkedList<NodeData>();
-        if (isConnected()) {
-            for (Iterator<NodeData> n = this.graph.nodeIter(); n.hasNext(); ) {
-                NodeData e = n.next();
-                if (e.getTag() != -1) {
-                    e.setTag(-1);
-                    double path = 0;
-                    for (Iterator<NodeData> destNode = this.graph.nodeIter(); destNode.hasNext(); ) {
-                        NodeData temp = destNode.next();
-                        if (temp.getTag() != -1) {
-                            temp.setTag(-1);
-//                            path += shortestPathDist(e.getKey(), temp.getKey());
-                            path = floydWarshall(this.graph).length;
-                        }
-                    }
-                    if (minPath > path) {
-                        minPath = path;
-                        answer = e;
-                    }
-                    System.out.println("The path is " + path);
+        double [][] matrix = floydWarshall(this.graph);
+        double [] maxPath = new double[graph.nodeSize()];
 
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (matrix[i][j] > maxPath[i]){
+                    maxPath[i] = matrix[i][j];
                 }
             }
         }
-        return answer;
-
-    }
-
-    public double[][] floydWarshall(DirectedWeightedGraph a) {
-        double[][] matrix = new double[a.nodeSize()][a.nodeSize()];
-        for (Iterator<NodeData> it = a.nodeIter(); it.hasNext(); ) {
-            NodeData e = it.next();
-            matrix[e.getKey()][e.getKey()]=0;
-        }
-
-        for (Iterator<EdgeData> it = a.edgeIter(); it.hasNext(); ) {
-            EdgeData e = it.next();
-            matrix[e.getSrc()][e.getDest()]=e.getWeight();
-        }
-
-        for (int i = 0; i < a.nodeSize(); i++) {
-            for (int j = 0; j < a.nodeSize(); j++) {
-                for (int k = 0; k < a.nodeSize(); k++) {
-                    if (matrix[j][k] > matrix[j][i] + matrix[i][k]){
-                        matrix[j][k] = matrix[j][i] + matrix[i][k];
+        double min = Double.MAX_VALUE;
+        int id = -1;
+        for (int i = 0; i < maxPath.length; i++) {
+            if (maxPath[i] == min){
+                double secondMaxid = 0;
+                double secondMaxi = 0;
+                for (int j = 0; j < matrix.length; j++) {
+                    if (matrix[j][id] > secondMaxid && matrix[j][id] < min){
+                        secondMaxid = matrix[j][id];
                     }
+                    if (matrix[j][i] > secondMaxi && matrix[j][i] < min){
+                        secondMaxi = matrix[j][i];
+                    }
+
+                }
+                if (secondMaxid > secondMaxi){
+                    id = i;
                 }
 
             }
-
+            if(maxPath[i] < min){
+                min = maxPath[i];
+                id = i;
+            }
         }
-
-        return matrix;
-
+        return graph.getNode(id);
     }
-
 
     @Override
-    //אני לא יודעת מה הם רוצים מחיי
     public List<NodeData> tsp(List<NodeData> cities) {
         //create a linklist for return
         LinkedList<NodeData> thePath = new LinkedList<NodeData>();
@@ -340,21 +221,27 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
         Arrays.fill(useTag, false);
         //every time we add vertex to the list the counter is +1
         int counter = 0;
+        //the curent src vertex we start random from the first in the given list
+        int src = 0;
         //run till we add all the vertex to the list
         while (counter < cities.size()) {
-            //the curent src vertex we start random from the first in the given list
-            int src = 0;
+
             //the curent dest vertex we will go for loop on all vertex and save the lowest cost
             int tempdest = cities.get(0).getKey();
             //the lowest cost from the curent src to the next dest
             double path = Double.MAX_VALUE;
             //run to check the cost from src to all the vertex in the given list and save the lowest cost and his vertex
-            for (int dest = 0; dest < cities.size() && src != dest && useTag[dest] != true; dest++) {
-                double tempPath = shortestPathDist(cities.get(src).getKey(), cities.get(dest).getKey());
-                if (tempPath < path) {
-                    path = tempPath;
-                    tempdest = cities.get(dest).getKey();
+            for (int dest = 0; dest < cities.size() && useTag[dest] != true; dest++) {
+                if (src != dest) {
+                    if (shortestPathDist(cities.get(src).getKey(), cities.get(dest).getKey()) == -1) {
+                        return null;
+                    }
+                    double tempPath = shortestPathDist(cities.get(src).getKey(), cities.get(dest).getKey());
+                    if (tempPath < path) {
+                        path = tempPath;
+                        tempdest = cities.get(dest).getKey();
 
+                    }
                 }
             }
             //change the flag to know we use this vertex allready
@@ -371,7 +258,6 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
 
         return thePath;
     }
-
 
     @Override
     public boolean save(String file) {
@@ -448,4 +334,91 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
         return false;
     }
 
+
+    public int dijkstra(NodeData srcNode) {
+        //this will be the lowest cost in a specific moment
+        double tempWeight = 0;
+        NodeData curentVertex;
+        //this Queue will hold the vertex to check their weight
+        PriorityQueue<NodeData> neighborQueue = new PriorityQueue<NodeData>(new CompereVertexWeight());
+        /*
+         *run on all the vertex with the iterator
+         * set their info to be empty becuse their we init the father vertex key
+         *  set tag to be -1 to know if we path their allready
+         *  set weight to 0 for the beginning becuse we will add the edge weight with the weight till their
+         */
+        for (Iterator<NodeData> it = graph.nodeIter(); it.hasNext(); ) {
+            NodeData e = it.next();
+            e.setWeight(Integer.MAX_VALUE);
+            e.setTag(-1);
+            e.setInfo("");
+        }
+        //set the src data for beginning and add him to Queue
+        if (graph.getNode(srcNode.getKey()) != null) {
+            srcNode.setWeight(0);
+            srcNode.setInfo("" + srcNode.getKey());
+            srcNode.setTag(1);
+            neighborQueue.add(srcNode);
+        }
+        //if we didnt finish to run on all the vertex in the gragh
+        while (!neighborQueue.isEmpty()) {
+            if (neighborQueue.peek() != null) {
+                //the curent veretex that we check all his next stop we run on all the edge are go out from him
+                curentVertex = neighborQueue.poll();
+                if (curentVertex != null) {
+                    for (Iterator<EdgeData> it = graph.edgeIter(curentVertex.getKey()); it.hasNext(); ) {
+                        EdgeData e = it.next();
+                        //save the dest vertex just for easy syntax to write
+                        NodeData dstVertex = graph.getNode(e.getDest());
+                        //this is the weigt till we get to this vertex + the edge weight
+                        tempWeight = curentVertex.getWeight() + e.getWeight();
+                        /*
+                         *we check if allready check this vertex or the weight in last time we check cost more than this path
+                         */
+                        if (dstVertex.getTag() < 0 || tempWeight < dstVertex.getWeight()) {
+                            neighborQueue.add(dstVertex);
+                            dstVertex.setInfo("" + curentVertex.getKey());
+                            dstVertex.setWeight(tempWeight);
+                            dstVertex.setTag(1);
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public double[][] floydWarshall(DirectedWeightedGraph a) {
+        double[][] matrix = new double[a.nodeSize()][a.nodeSize()];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                matrix[i][j] = Double.MAX_VALUE;
+            }
+
+        }
+        for (Iterator<NodeData> it = a.nodeIter(); it.hasNext(); ) {
+            NodeData e = it.next();
+            matrix[e.getKey()][e.getKey()]=0;
+        }
+
+        for (Iterator<EdgeData> it = a.edgeIter(); it.hasNext(); ) {
+            EdgeData e = it.next();
+            matrix[e.getSrc()][e.getDest()]=e.getWeight();
+        }
+
+        for (int i = 0; i < a.nodeSize(); i++) {
+            for (int j = 0; j < a.nodeSize(); j++) {
+                for (int k = 0; k < a.nodeSize(); k++) {
+                    if (matrix[j][k] > matrix[j][i] + matrix[i][k]){
+                        matrix[j][k] = matrix[j][i] + matrix[i][k];
+                    }
+                }
+
+            }
+
+        }
+
+        return matrix;
+
+    }
 }

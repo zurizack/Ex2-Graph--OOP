@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CompereVertexWeightTest {
 
+    public static DirectedWeightedGraph graph;
+
     @Test
     void compare() {
     }

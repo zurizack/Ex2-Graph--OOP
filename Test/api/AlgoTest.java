@@ -1,8 +1,12 @@
 package api;
 
 //import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,7 +64,6 @@ class AlgoTest {
         assertEquals(empty.edgeSize(),copy.edgeSize());
         assertEquals(empty.getMC(),copy.getMC());
         assertEquals(empty.nodeSize(),copy.nodeSize());
-        //assertEquals(empty,copy,"shoud be coppied");
         assertNotEquals(graph,copy);
 
         graphAlgo.init(graph);
@@ -68,7 +71,6 @@ class AlgoTest {
         assertEquals(graph.nodeSize(),copy.nodeSize());
         assertEquals(graph.getMC(),copy.getMC());
         assertEquals(graph.edgeSize(),copy.edgeSize());
-        //assertEquals(graph,copy,"shoud be coppied");
         assertNotEquals(graph, copy);
 
 
@@ -121,13 +123,29 @@ class AlgoTest {
 
     @Test
     void shortestPath() {
+
+        this.graphAlgo = new Algo();
+        this.graphAlgo.init(graph);
+
+        double path = graphAlgo.shortestPathDist(1,8);
+        double temp = 0;
+        List<NodeData> thepath = graphAlgo.shortestPath(1,8);
+        for (int i = 0; i < thepath.size(); i++) {
+            System.out.print(","+thepath.get(i).getKey());
+        }
+
+        for (int i = 0; i < thepath.size()-1; i++) {
+            temp += graphAlgo.getGraph().getEdge(thepath.get(i).getKey(),thepath.get(i+1).getKey()).getWeight();
+        }
+        assertEquals(temp,path);
     }
 
     @Test
     void center() {
 
-        this.graphAlgo = new Algo();
-        this.graphAlgo.init(graph);
+
+
+
 
         assertEquals(5,graphAlgo.center().getKey());
 
@@ -146,6 +164,28 @@ class AlgoTest {
 
     @Test
     void tsp() {
+
+        this.graphAlgo = new Algo();
+        this.graphAlgo.init(graph);
+
+        List<NodeData> cities = new LinkedList<>();
+        int [] arr =  {1 , 3 , 5 , 7};
+        for (int i = 0; i < arr.length; i++) {
+            cities.add(graphAlgo.getGraph().getNode(arr[i]));
+        }
+        List<NodeData> cities1 = graphAlgo.tsp(cities);
+        List<NodeData> cities2 = new LinkedList<NodeData>();
+        cities2.add(graphAlgo.getGraph().getNode(3));
+        cities2.add(graphAlgo.getGraph().getNode(1));
+        cities2.add(graphAlgo.getGraph().getNode(1));
+        cities2.add(graphAlgo.getGraph().getNode(1));
+
+        for (int i = 0; i < arr.length ; i++) {
+            assertEquals(cities2.get(i).getKey(),cities1.get(i).getKey());
+        }
+
+
+
     }
 
     @Test
@@ -155,12 +195,9 @@ class AlgoTest {
         graphAlgo.save("test graph");
         DirectedWeightedGraphAlgorithms temp = new Algo();
         temp.load("test graph");
-        assertEquals(temp.getGraph(),graphAlgo.getGraph());
+        //assertEquals(temp.getGraph(),graphAlgo.getGraph());
 
-    }
 
-    @Test
-    void dijkstra() {
     }
 
     @BeforeEach
@@ -210,12 +247,6 @@ class AlgoTest {
         graph.connect(15,16,400);
 
         graph.connect(16,0,400);
-
-
-
-
-
-
 
     }
 
