@@ -102,23 +102,18 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
         return count == graph.nodeSize();
     }
 
-    /***
-     * הפונקציה בודקת שהקודוקודים קיימים בגף
-     * הפונקציה בודקת שהקדוקוד יעד והקודקוד מקום לא שווים ואם כן מחזירה 0 כי המרחק של קודקוד מעצמו הוא 0
-     * ואם הם לא אז היא קוראת לפונקציה דיז'קסטרה שהיא בעצם מחשבת את המרחק של קודקוד היעד מקודקוד המקור ומעדכנת את זה במשקל של הקודקוד
-     */
     @Override
     public double shortestPathDist(int src, int dest) {
         // check if the vertex are exsists
-        if (graph.getNode(src) != null && graph.getNode(dest) != null){
+        if (graph.getNode(src) != null && graph.getNode(dest) != null) {
             //check if the dest and src is the same vertex if yes return 0
-            if (src == dest){
+            if (src == dest) {
                 return 0;
             }
             //if not call to dijkstra to check the shortest path and set it in the dest weight
             dijkstra(graph.getNode(src));
             //after dijkstra finish make shour it is set the weight if yes return the cost
-            if (graph.getNode(dest).getWeight() != Integer.MAX_VALUE){
+            if (graph.getNode(dest).getWeight() != Integer.MAX_VALUE) {
                 return graph.getNode(dest).getWeight();
             }
         }
@@ -141,26 +136,27 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
 
             dijkstra(graph.getNode(src));
             //check if the gragh is not connected betwin the src and the dest
-            if ((graph.getNode(dest).getWeight() == Integer.MAX_VALUE)){
+            if ((graph.getNode(dest).getWeight() == Integer.MAX_VALUE)) {
                 return null;
             }
             //save the dest node evry time
             NodeData destNode = graph.getNode(dest);
-            try{
+            try {
                 //go back from dest to src by the info because the dijkstra save there the father node every time
                 //and add it to the stack
+
                 while (graph.getNode(src) != destNode) {
                     temp.add(destNode);
                     destNode = graph.getNode(Integer.parseInt(destNode.getInfo()));
                 }
+                temp.add(graph.getNode(src));
 
             }
             //try to catch an eror with the casting to int from string
-            catch(NumberFormatException e ){
+            catch (NumberFormatException e) {
                 System.out.println("houston we have a problem");
                 return null;
-            }
-            catch(Exception e ){
+            } catch (Exception e) {
                 System.out.println("houston we have a problem");
                 return null;
             }
@@ -169,7 +165,6 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
                 path.add(temp.pop());
             }
         }
-
 
 
         return path;
@@ -193,7 +188,7 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
 
         double minPath = Integer.MAX_VALUE;
         NodeData answer = null;
-        if(isConnected()) {
+        if (isConnected()) {
             for (Iterator<NodeData> n = this.graph.nodeIter(); n.hasNext(); ) {
                 NodeData e = n.next();
                 double path = 0;
@@ -217,7 +212,7 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
         LinkedList<NodeData> thePath = new LinkedList<NodeData>();
         //create an array for taging to know if we use a vertex in the list allready
         //it so agly and not profeshional to do like that but I had a problem to use tag bicuse the shortestpath use it
-        boolean [] useTag = new boolean[cities.size()];
+        boolean[] useTag = new boolean[cities.size()];
         //initializing the arr with false
         Arrays.fill(useTag, false);
         //every time we add vertex to the list the counter is +1
@@ -225,14 +220,14 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
         //the curent src vertex we start random from the first in the given list
         int src = 0;
         //run till we add all the vertex to the list
-        while (counter < cities.size() ) {
+        while (counter < cities.size()) {
 
             //the curent dest vertex we will go for loop on all vertex and save the lowest cost
             int tempdest = cities.get(0).getKey();
             //the lowest cost from the curent src to the next dest
             double path = Double.MAX_VALUE;
             //run to check the cost from src to all the vertex in the given list and save the lowest cost and his vertex
-            for (int dest = 0; dest < cities.size()  && useTag[dest] != true; dest++) {
+            for (int dest = 0; dest < cities.size() && useTag[dest] != true; dest++) {
                 if (src != dest) {
                     if (shortestPathDist(cities.get(src).getKey(), cities.get(dest).getKey()) == -1) {
                         return null;
@@ -343,10 +338,10 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
         //this Queue will hold the vertex to check their weight
         PriorityQueue<NodeData> neighborQueue = new PriorityQueue<NodeData>(new CompereVertexWeight());
         /*
-        *run on all the vertex with the iterator
-        * set their info to be empty becuse their we init the father vertex key
-        *  set tag to be -1 to know if we path their allready
-        *  set weight to 0 for the beginning becuse we will add the edge weight with the weight till their
+         *run on all the vertex with the iterator
+         * set their info to be empty becuse their we init the father vertex key
+         *  set tag to be -1 to know if we path their allready
+         *  set weight to 0 for the beginning becuse we will add the edge weight with the weight till their
          */
         for (Iterator<NodeData> it = graph.nodeIter(); it.hasNext(); ) {
             NodeData e = it.next();
@@ -355,7 +350,7 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
             e.setInfo("");
         }
         //set the src data for beginning and add him to Queue
-        if (graph.getNode(srcNode.getKey()) != null){
+        if (graph.getNode(srcNode.getKey()) != null) {
             srcNode.setWeight(0);
             srcNode.setInfo("" + srcNode.getKey());
             srcNode.setTag(1);
@@ -389,4 +384,31 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
         return 0;
     }
 
+    public double[][] floydWarshall(DirectedWeightedGraph a) {
+        double[][] matrix = new double[a.nodeSize()][a.nodeSize()];
+        for (Iterator<NodeData> it = a.nodeIter(); it.hasNext(); ) {
+            NodeData e = it.next();
+            matrix[e.getKey()][e.getKey()]=0;
+        }
+
+        for (Iterator<EdgeData> it = a.edgeIter(); it.hasNext(); ) {
+            EdgeData e = it.next();
+            matrix[e.getSrc()][e.getDest()]=e.getWeight();
+        }
+
+        for (int i = 0; i < a.nodeSize(); i++) {
+            for (int j = 0; j < a.nodeSize(); j++) {
+                for (int k = 0; k < a.nodeSize(); k++) {
+                    if (matrix[j][k] > matrix[j][i] + matrix[i][k]){
+                        matrix[j][k] = matrix[j][i] + matrix[i][k];
+                    }
+                }
+
+            }
+            
+        }
+
+        return matrix;
+
+    }
 }

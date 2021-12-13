@@ -123,6 +123,21 @@ class AlgoTest {
 
     @Test
     void shortestPath() {
+
+        this.graphAlgo = new Algo();
+        this.graphAlgo.init(graph);
+
+        double path = graphAlgo.shortestPathDist(1,8);
+        double temp = 0;
+        List<NodeData> thepath = graphAlgo.shortestPath(1,8);
+        for (int i = 0; i < thepath.size(); i++) {
+            System.out.print(","+thepath.get(i).getKey());
+        }
+
+        for (int i = 0; i < thepath.size()-1; i++) {
+            temp += graphAlgo.getGraph().getEdge(thepath.get(i).getKey(),thepath.get(i+1).getKey()).getWeight();
+        }
+        assertEquals(temp,path);
     }
 
     @Test
@@ -231,12 +246,6 @@ class AlgoTest {
         graph.connect(15,16,400);
 
         graph.connect(16,0,400);
-
-
-
-
-
-
 
     }
 
