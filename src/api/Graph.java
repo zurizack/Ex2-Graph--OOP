@@ -176,13 +176,14 @@ public class Graph implements DirectedWeightedGraph {
 
     @Override//removeEdge should be in O(1)
     public EdgeData removeEdge(int src, int dest) {
+        EdgeData e = null;
         if (this.edges.get(src).containsKey(dest)){
-            this.edges.get(src).remove(dest);
+            e = this.edges.get(src).remove(dest);
             this.oppositeEdges.get(dest).remove(src);
             this.numofedges--;
             this.counterMc++;
         }
-        return null;
+        return e;
     }
 
 ///////////////////////////////////////////////////////////////////

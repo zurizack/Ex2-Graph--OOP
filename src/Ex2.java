@@ -47,7 +47,7 @@ public class Ex2 {
 
         new MyPanel(alg.getGraph());
         new FrameExtend(alg.getGraph());
-        new MyLabel((DirectedWeightedGraphAlgorithms) alg.getGraph());
+//        new MyLabel((DirectedWeightedGraphAlgorithms) alg.getGraph());
 
         // ****** Add your code here ******
         //
@@ -61,5 +61,6 @@ public class Ex2 {
 //        System.out.println(a.getGraph().getNode(0).getKey());
 //        runGUI("G1.json");
         System.out.println("The center is: "+a.center().getKey());
+
     }
 }
