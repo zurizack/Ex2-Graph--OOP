@@ -172,38 +172,42 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public NodeData center() {
-        /***הפונקציה הזאת אמורה להחזיר את הקודקוד שיש ממנו את המסלול המינימלי לכל הקודקודים
-         * מה הפונקציה עושה :
-         *  כל פעם עבור כל קודקוד אני בודקת את כל המסלולים לכל שאר הקודקודים בגרף, זאת אומרת עבור כל איטרציה של הלולאה הראשית שבוחרת לי את הקודקוד מקור
-         *  יש עוד לולאה בפנים שבכל איטרציה שלה בוחרת לי את היעדים וכך בעצם מחשבת את כל המסלולים לשאר הקודקוד
-         *  באיטרציה הבאה של הלולאה הראשית הקוד קוד המקור מתחלף ושוב עושה בדיקת מסלול עבור כל המסלולים עם יעידים שונים
-         *  לבסוף אני בוחרת את המסלול המינמילי ואת קוד קוד המקור המותאם למסלול המינמלי ואני מחזירה אותו.
-         *  איך שמרתי את הקודקוד?
-         *  עשיתי משתנה מסוג DirectedWeightedGraph והשתמשתי בפונקציה שבהינתן איידי של קודקוד מחזירה את המידע על כל הקודקוד
-         *  ,ואז את המשתנה הזה אני מכניסה לקודקוד מסוג NODEDATA ומחזירה אותו בסוף
-         *
-         *
-         */
+        double [][] matrix = floydWarshall(this.graph);
+        double [] maxPath = new double[graph.nodeSize()];
 
-
-        double minPath = Integer.MAX_VALUE;
-        NodeData answer = null;
-        if (isConnected()) {
-            for (Iterator<NodeData> n = this.graph.nodeIter(); n.hasNext(); ) {
-                NodeData e = n.next();
-                double path = 0;
-                for (Iterator<NodeData> destNode = this.graph.nodeIter(); destNode.hasNext(); ) {
-                    NodeData temp = destNode.next();
-                    path += shortestPathDist(e.getKey(), temp.getKey());
-
-                }
-                if (minPath > path) {
-                    minPath = path;
-                    answer = e;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (matrix[i][j] > maxPath[i]){
+                    maxPath[i] = matrix[i][j];
                 }
             }
         }
-        return answer;
+        double min = Double.MAX_VALUE;
+        int id = -1;
+        for (int i = 0; i < maxPath.length; i++) {
+            if (maxPath[i] == min){
+                double secondMaxid = 0;
+                double secondMaxi = 0;
+                for (int j = 0; j < matrix.length; j++) {
+                    if (matrix[j][id] > secondMaxid && matrix[j][id] < min){
+                        secondMaxid = matrix[j][id];
+                    }
+                    if (matrix[j][i] > secondMaxi && matrix[j][i] < min){
+                        secondMaxi = matrix[j][i];
+                    }
+
+                }
+                if (secondMaxid > secondMaxi){
+                    id = i;
+                }
+
+            }
+            if(maxPath[i] < min){
+                min = maxPath[i];
+                id = i;
+            }
+        }
+        return graph.getNode(id);
     }
 
     @Override
@@ -386,6 +390,12 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
 
     public double[][] floydWarshall(DirectedWeightedGraph a) {
         double[][] matrix = new double[a.nodeSize()][a.nodeSize()];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                matrix[i][j] = Double.MAX_VALUE;
+            }
+
+        }
         for (Iterator<NodeData> it = a.nodeIter(); it.hasNext(); ) {
             NodeData e = it.next();
             matrix[e.getKey()][e.getKey()]=0;

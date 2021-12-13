@@ -143,8 +143,9 @@ class AlgoTest {
     @Test
     void center() {
 
-        this.graphAlgo = new Algo();
-        this.graphAlgo.init(graph);
+
+
+
 
         assertEquals(5,graphAlgo.center().getKey());
 

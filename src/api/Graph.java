@@ -89,8 +89,6 @@ public class Graph implements DirectedWeightedGraph {
 
         }
     }
-
-    ////////////////////////////////////////////////////////////
     @Override
     public void connect(int src, int dest, double w) {//Should be O(1)
         /* check the src and the dst are not the same vertex */
@@ -173,16 +171,16 @@ public class Graph implements DirectedWeightedGraph {
 
     @Override//removeEdge should be in O(1)
     public EdgeData removeEdge(int src, int dest) {
+        EdgeData e = null;
         if (this.edges.get(src).containsKey(dest)){
+            e = this.edges.get(src).remove(dest);
             this.edges.get(src).remove(dest);
             this.oppositeEdges.get(dest).remove(src);
             this.numofedges--;
             this.counterMc++;
         }
-        return null;
+        return e;
     }
-
-///////////////////////////////////////////////////////////////////
 
     /**
      * Returns the number of vertices (nodes) in the graph.
@@ -205,9 +203,6 @@ public class Graph implements DirectedWeightedGraph {
     public int edgeSize() {
         return this.numofedges;
     }
-
-
-/////////////////////////////////////////////////////////////////////
 
     @Override
     public int getMC() {

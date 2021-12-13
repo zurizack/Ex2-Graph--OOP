@@ -49,7 +49,6 @@ public class MyPanel extends JPanel {
             node = n.next();
             x2 =(int) ((node.getLocation().x() - lowX())*scaleX);
             y2 = (int)((node.getLocation().y()- lowY())*scaleY);
-            System.out.println("this is the x val = "+x2 + "this is the y val ="+ y2);
             g2.drawOval(x2+55,y2+55,15,15);
 //            g.setColor(Color.black);
 //            double distX = maxX - node.getLocation().x();
