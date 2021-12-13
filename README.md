@@ -58,9 +58,15 @@ a random vertex and run on it the algorithm that will run for us on the whole gr
 
 
 
-Center - This is a function, which finds a vertex, to which the distance from all other vertices is minimal. The function uses the shortestPathDist algorithm.
+Center - This is a function, which finds a vertex, to which the distance from all other vertices is minimal. The function uses the Floyd Warshall algorithm algorithm.
 Each time we take a vertex and check the distances to it from the other vertices. Each time we will keep the minimum distance and the vertex itself.
 We will make track-to-track comparisons and finally return the vertex.
+Floyd Warshal Algorithm - https://youtu.be/4OQeCuLYj-4
+The explanation of the algorithm is taken from -> https://www.geeksforgeeks.org/floyd-warshall-algorithm-dp-16/
+We initialize the solution matrix same as the input graph matrix as a first step. Then we update the solution matrix by considering all vertices as an intermediate vertex. The idea is to one by one pick all vertices and updates all shortest paths which include the picked vertex as an intermediate vertex in the shortest path. When we pick vertex number k as an intermediate vertex, we already have considered vertices {0, 1, 2, .. k-1} as intermediate vertices. For every pair (i, j) of the source and destination vertices respectively, there are two possible cases. 
+1) k is not an intermediate vertex in shortest path from i to j. We keep the value of dist[i][j] as it is. 
+2) k is an intermediate vertex in shortest path from i to j. We update the value of dist[i][j] as dist[i][k] + dist[k][j] if dist[i][j] > dist[i][k] + dist[k][j]
+The following figure shows the above optimal substructure property in the all-pairs shortest path problem.
 
 
 ![traveling_salesman-Medium-930x620](https://user-images.githubusercontent.com/69717074/145679050-3da1cfe3-e6b8-4935-bdae-c80039fe00dd.png)
@@ -85,3 +91,9 @@ size up the counter
 And the two load and save functions, which load our JSON files and save them.
 - https://www.youtube.com/watch?v=XaXsJJh-Q5Y
 - https://www.youtube.com/watch?v=cY4HiiFHO1o
+
+We also did tests in all the classes. This will check if each of our functions is also working properly
+Also we checked our center algorithm on graphs in size 1000, 10000 , 100000.
+for graph in size 1000 - it took 3.648 seconds.
+for graph in size 10000 - it took 17 minutes.
+
