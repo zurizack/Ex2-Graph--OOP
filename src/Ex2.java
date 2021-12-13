@@ -53,25 +53,13 @@ public class Ex2 {
 
     public static void main(String[]args){
 
-        DirectedWeightedGraphAlgorithms a = getGrapgAlgo("1000Nodes.json");
-        System.out.println(a.isConnected());
-        System.out.println(a.shortestPathDist(0,1));
-        System.out.println(a.getGraph().getNode(0).getKey());
-        runGUI("1000Nodes.json");
-
-        System.out.println("center =" + a.center().getKey());
-
-//       DirectedWeightedGraphAlgorithms a = getGrapgAlgo("G1.json");
-//
+//        DirectedWeightedGraphAlgorithms a = getGrapgAlgo("1000Nodes.json");
 //        System.out.println(a.isConnected());
-//        System.out.println(a.shortestPathDist(1,10));
+//        System.out.println(a.shortestPathDist(0,1));
 //        System.out.println(a.getGraph().getNode(0).getKey());
-//        List<NodeData> list = a.shortestPath(0,3);
-//        System.out.println(Arrays.toString(list.toArray()));
-//        NodeData b = a.center();
-//        int d = b.getKey();
-//        System.out.println(d);
-//        new MyPanel(a.getGraph());
+//        runGUI("1000Nodes.json");
+//
+//        System.out.println("center =" + a.center().getKey());
 
     }
 }

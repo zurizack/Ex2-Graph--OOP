@@ -78,6 +78,9 @@ class AlgoTest {
 
     @Test
     void isConnected() {
+
+
+
         this.graphAlgo = new Algo();
         this.graphAlgo.init(graph);
 
@@ -105,7 +108,12 @@ class AlgoTest {
     @Test
     void shortestPathDist() {
 
+
+
         this.graphAlgo = new Algo();
+
+
+
         graphAlgo.init(graph);
         assertEquals(8,graphAlgo.shortestPathDist(0,7));
         assertEquals(808,graphAlgo.shortestPathDist(7,0),"expected 808");
@@ -167,25 +175,20 @@ class AlgoTest {
 
         this.graphAlgo = new Algo();
         this.graphAlgo.init(graph);
-
+        NodeData a = graphAlgo.getGraph().getNode(1);
+        NodeData b = graphAlgo.getGraph().getNode(3);
+        NodeData c = graphAlgo.getGraph().getNode(2);
         List<NodeData> cities = new LinkedList<>();
-        int [] arr =  {1 , 3 , 5 , 7};
-        for (int i = 0; i < arr.length; i++) {
-            cities.add(graphAlgo.getGraph().getNode(arr[i]));
-        }
-        List<NodeData> cities1 = graphAlgo.tsp(cities);
-        List<NodeData> cities2 = new LinkedList<NodeData>();
-        cities2.add(graphAlgo.getGraph().getNode(3));
-        cities2.add(graphAlgo.getGraph().getNode(1));
-        cities2.add(graphAlgo.getGraph().getNode(1));
-        cities2.add(graphAlgo.getGraph().getNode(1));
-
-        for (int i = 0; i < arr.length ; i++) {
-            assertEquals(cities2.get(i).getKey(),cities1.get(i).getKey());
-        }
-
-
-
+        cities.add(a);
+        cities.add(b);
+        cities.add(c);
+        List<NodeData> cities1 = new LinkedList<>();
+        cities1 = graphAlgo.tsp(cities);
+        assertEquals(cities.get(0).getKey(),cities1.get(0).getKey());
+        assertEquals(cities.get(1).getKey(),cities1.get(2).getKey());
+        assertEquals(cities.get(2).getKey(),cities1.get(1).getKey());
+        this.graphAlgo.init(graph);
+        
     }
 
     @Test

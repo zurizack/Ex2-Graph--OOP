@@ -212,51 +212,18 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
-        //create a linklist for return
-        LinkedList<NodeData> thePath = new LinkedList<NodeData>();
-        //create an array for taging to know if we use a vertex in the list allready
-        //it so agly and not profeshional to do like that but I had a problem to use tag bicuse the shortestpath use it
-        boolean[] useTag = new boolean[cities.size()];
-        //initializing the arr with false
-        Arrays.fill(useTag, false);
-        //every time we add vertex to the list the counter is +1
-        int counter = 0;
-        //the curent src vertex we start random from the first in the given list
-        int src = 0;
-        //run till we add all the vertex to the list
-        while (counter < cities.size()) {
-
-            //the curent dest vertex we will go for loop on all vertex and save the lowest cost
-            int tempdest = cities.get(0).getKey();
-            //the lowest cost from the curent src to the next dest
-            double path = Double.MAX_VALUE;
-            //run to check the cost from src to all the vertex in the given list and save the lowest cost and his vertex
-            for (int dest = 0; dest < cities.size() && useTag[dest] != true; dest++) {
-                if (src != dest) {
-                    if (shortestPathDist(cities.get(src).getKey(), cities.get(dest).getKey()) == -1) {
-                        return null;
-                    }
-                    double tempPath = shortestPathDist(cities.get(src).getKey(), cities.get(dest).getKey());
-                    if (tempPath < path) {
-                        path = tempPath;
-                        tempdest = cities.get(dest).getKey();
-
-                    }
-                }
+        TSPResult best_result = null;
+        for (int i = 0; i < cities.size(); i++) {
+            TSPResult res = tsp_helper(cities, i);
+            if (res!=null){
+                if(best_result==null || best_result.length>res.length)
+                    best_result = res;
             }
-            //change the flag to know we use this vertex allready
-            useTag[tempdest] = true;
-            //add the vertex to the list
-            thePath.add(graph.getNode(tempdest));
-            //change the src to be the last dst
-            src = tempdest;
-            //size up the counter
-            counter++;
-
         }
-
-
-        return thePath;
+        if (best_result==null)
+            return null;
+        else
+            return best_result.path;
     }
 
     @Override
@@ -420,5 +387,58 @@ public class Algo implements DirectedWeightedGraphAlgorithms {
 
         return matrix;
 
+    }
+
+
+
+    public TSPResult tsp_helper(List<NodeData> cities, int start) {
+        //create a linklist for return
+        TSPResult result = new TSPResult();
+        //create an array for taging to know if we use a vertex in the list allready
+        //it so agly and not profeshional to do like that but I had a problem to use tag bicuse the shortestpath use it
+        boolean[] useTag = new boolean[cities.size()];
+        //initializing the arr with false
+        Arrays.fill(useTag, false);
+        //every time we add vertex to the list the counter is +1
+        int counter = 0;
+        //run till we add all the vertex to the list
+        int src_index = start;
+        useTag[src_index] = true;
+        int src = cities.get(src_index).getKey();
+        result.path.add(cities.get(src_index));
+        while ( counter < cities.size()-1 ) {
+            //the curent src vertex we start random from the first in the given list
+            //the curent dest vertex we will go for loop on all vertex and save the lowest cost
+            int tempdest_index = -1;
+            //the lowest cost from the curent src to the next dest
+            double min_length = Double.MAX_VALUE;
+            //run to check the cost from src to all the vertex in the given list and save the lowest cost and his vertex
+            for (int dest_index = 0; dest_index < cities.size(); dest_index++) {
+                if ( src_index == dest_index || useTag[dest_index] )
+                    continue;
+                int dest = cities.get(dest_index).getKey();
+                double tempPath = shortestPathDist(src, dest);
+                if (tempPath>0 && tempPath < min_length ) {
+                    min_length = tempPath;
+                    tempdest_index = dest_index;
+                }
+            }
+            if ( tempdest_index == -1 )
+                return null;
+            NodeData tempdest = cities.get(tempdest_index);
+            //change the flag to know we use this vertex allready
+            useTag[tempdest_index] = true;
+            result.length += min_length;
+            //add the vertex to the list
+            result.path.add(tempdest);
+            //change the src to be the last dst
+            src_index = tempdest_index;
+            //size up the counter
+            counter++;
+
+        }
+
+
+        return result;
     }
 }
