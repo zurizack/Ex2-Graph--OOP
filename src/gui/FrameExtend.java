@@ -1,9 +1,8 @@
-package GUI;
+package gui;
 
 import api.DirectedWeightedGraph;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class FrameExtend extends JFrame {
     MyPanel panel;
@@ -15,7 +14,6 @@ public class FrameExtend extends JFrame {
         this.add(panel);
 
         this.setSize(1000, 1000);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
 
     }

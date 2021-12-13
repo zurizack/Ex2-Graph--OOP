@@ -1,9 +1,7 @@
-import GUI.MyPanel;
+import gui.MyPanel;
 import api.*;
 
-import java.util.Arrays;
-import java.util.List;
-import GUI.*;
+import gui.*;
 
 
 /**

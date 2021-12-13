@@ -1,18 +1,11 @@
-package GUI;
-import api.*;
+package gui;
 import api.DirectedWeightedGraph;
 import api.EdgeData;
 import api.NodeData;
-import api.Graph;
-import api.GeoLocation;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 
 
 public class MyPanel extends JPanel {
@@ -54,8 +47,8 @@ public class MyPanel extends JPanel {
 
         for (Iterator<NodeData> n = this.graph.nodeIter(); n.hasNext(); ) {
             node = n.next();
-             x2 =(int) ((node.getLocation().x() - lowX())*scaleX);
-             y2 = (int)((node.getLocation().y()- lowY())*scaleY);
+            x2 =(int) ((node.getLocation().x() - lowX())*scaleX);
+            y2 = (int)((node.getLocation().y()- lowY())*scaleY);
             System.out.println("this is the x val = "+x2 + "this is the y val ="+ y2);
             g2.drawOval(x2+55,y2+55,15,15);
 //            g.setColor(Color.black);
