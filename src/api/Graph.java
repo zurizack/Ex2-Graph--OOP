@@ -105,9 +105,11 @@ public class Graph implements DirectedWeightedGraph {
                     this.oppositeEdges.get(dest).put(src , oppositEdge);
                     this.numofedges++;
                     this.counterMc++;
+
                 }
             }
         }
+
     }
     @Override
     public Iterator<NodeData> nodeIter() {

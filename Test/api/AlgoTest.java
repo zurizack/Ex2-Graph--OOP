@@ -188,7 +188,7 @@ class AlgoTest {
         assertEquals(cities.get(1).getKey(),cities1.get(2).getKey());
         assertEquals(cities.get(2).getKey(),cities1.get(1).getKey());
         this.graphAlgo.init(graph);
-        
+
     }
 
     @Test
