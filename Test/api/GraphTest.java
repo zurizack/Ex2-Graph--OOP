@@ -36,6 +36,13 @@ class GraphTest {
 
     @Test
     void removeNode() {
+        DirectedWeightedGraphAlgorithms a = new Algo();
+        DirectedWeightedGraph b = new Graph();
+        a.init(b);
+        a.load("G1.json");
+        System.out.println("before: " + a.getGraph().getEdge(3,1));
+        a.getGraph().removeNode(3);
+        System.out.println("after: "+a.getGraph().getEdge(2,3).getSrc());
     }
 
     @Test

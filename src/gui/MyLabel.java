@@ -36,14 +36,14 @@ public class MyLabel extends JFrame implements ActionListener {
 		this.lbl_status.setBounds(50, 50, 400, 20);
 		this.add(lbl_status);
 		
-		String[] txt_btns_old = { "load", "save", "edit", "run", "run algorithm"};
-		String[] txt_btns = new String[txt_btns_old.length+secondary_txt_btns.length];
+		String[] txt_btns_old = { "load", "save", "run", "run algorithm" };
+		String[] txt_btns = new String[txt_btns_old.length + secondary_txt_btns.length];
 		int index = 0;
 		for (; index < txt_btns_old.length; index++) {
 			txt_btns[index] = txt_btns_old[index];
 		}
-		for (; index < txt_btns_old.length+secondary_txt_btns.length; index++) {
-			txt_btns[index] = secondary_txt_btns[index-txt_btns_old.length];
+		for (; index < txt_btns_old.length + secondary_txt_btns.length; index++) {
+			txt_btns[index] = secondary_txt_btns[index - txt_btns_old.length];
 		}
 		
 		btns = new HashMap<>();
@@ -78,11 +78,15 @@ public class MyLabel extends JFrame implements ActionListener {
 		}
 		inputs.get("shortest path").hint = "ex: 2, 3";
 		inputs.get("tsp").hint = "ex: 0, 2, 5";
+		inputs.get("add edge").hint = "ex: 1,2,3.343";
+		inputs.get("remove edge").hint = "ex: 1,2";
+		inputs.get("remove node").hint = "ex: 1";
+		inputs.get("add node").hint = "add yours node id";
 		
 		
 		hide_input("is connected");
 		hide_input("center");
-		hide_input("add node");
+		//hide_input("add node");
 		nullify();
 		
 		//b1.addActionListener(this);
@@ -120,7 +124,6 @@ public class MyLabel extends JFrame implements ActionListener {
 		add_action_to_load();
 		add_action_to_run();
 		add_action_to_save();
-		add_action_to_edit();
 		add_action_to_run_algo();
 		
 		add_action_to_algo_is_connected();
@@ -188,17 +191,6 @@ public class MyLabel extends JFrame implements ActionListener {
 		});
 	}
 	
-	private void add_action_to_edit() {
-		btns.get("save").addActionListener(e -> {
-			if ( this.graph == null ) {
-				this.lbl_status.setText("Error: can't edit if graph is not loaded.");
-				return;
-			}
-			// todo: implement me
-			System.out.println("clicked EDIT button");  // todo: delete me
-		});
-	}
-	
 	//endregion
 	//region alg buttons
 	private void add_action_to_algo_is_connected() {
@@ -232,29 +224,35 @@ public class MyLabel extends JFrame implements ActionListener {
 			results.get("center").setText(graph.center().getKey() + "");
 		});
 	}
-
-	private void add_action_remove_edge(){
-
+	
+	private void add_action_remove_edge() {
+		
 		btns.get("remove edge").addActionListener(e -> {
-			String str = inputs.get("add edge").getText();
+			String str = inputs.get("remove edge").getText();
 			String[] parts = str.split("[\\D]+", 0);
 			if ( parts.length != 2 ) {
 				results.get("remove edge").setText("Please enter 'src,dest' nodes numbers  like: '1,2'");
 				return;
 			}
 			try {
-				graph.getGraph().removeEdge(Integer.parseInt(parts[0]),Integer.parseInt(parts[1]));
-				results.get("remove edge").setText("the edge has been removed from src:" + (int) Double.parseDouble(parts[0]) +" to dest: " + (int)Double.parseDouble(parts[1]) );
+				int from = Integer.parseInt(parts[0]);
+				int to = Integer.parseInt(parts[1]);
+				EdgeData ed = graph.getGraph().removeEdge(from, to);
+				if ( ed == null )
+					results.get("remove edge").setText("Edge does not exist");
+				else
+					results.get("remove edge").setText(
+							"the edge has been removed from src:" + from + " to dest: " + to);
 			}
 			catch (Exception ignored) {
-
+				
 				results.get("remove edge").setText("Something bad happened.");
 			}
 		});
 	}
-
-	private void add_action_remove_node(){
-
+	
+	private void add_action_remove_node() {
+		
 		btns.get("remove node").addActionListener(e -> {
 			String str = inputs.get("remove node").getText();
 			String[] parts = str.split("[\\D]+", 0);
@@ -263,17 +261,20 @@ public class MyLabel extends JFrame implements ActionListener {
 				return;
 			}
 			try {
-				graph.getGraph().removeNode(Integer.parseInt(parts[0]));
-				results.get("remove node").setText("node: " +Integer.parseInt(parts[0] + "has been removed"));
+				System.out.println("the node: " + parts[0]);
+				NodeData n = graph.getGraph().removeNode(Integer.parseInt(parts[0]));
+				if ( n == null )
+					results.get("remove node").setText("node does not exist");
+				else
+					results.get("remove node").setText("node: " + Integer.parseInt(parts[0] + " has been removed"));
 			}
 			catch (Exception ignored) {
-
+				
 				results.get("remove node").setText("Something bad happened.");
 			}
 		});
 	}
-
-
+	
 	
 	private void add_action_add_edge() {
 		btns.get("add edge").addActionListener(e -> {
@@ -284,32 +285,45 @@ public class MyLabel extends JFrame implements ActionListener {
 				return;
 			}
 			try {
-				EdgeData edge = new Edge((int) Double.parseDouble(parts[0]), (int)Double.parseDouble(parts[1]) ,Double.parseDouble(parts[2]));
-				graph.getGraph().connect(edge.getSrc(), edge.getDest() ,edge.getWeight());
-				results.get("add edge").setText("the edge has been added from src:" + (int) Double.parseDouble(parts[0]) +" to dest: " + (int)Double.parseDouble(parts[1]) + " with wight:" + Double.parseDouble(parts[2]));
+				EdgeData edge = new Edge(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Double.parseDouble(parts[2]));
+				if ( graph.getGraph().getEdge(edge.getSrc(), edge.getDest()) != null ) {
+					results.get("add edge").setText("the edge is already exist");
+					return;
+				}
+				graph.getGraph().connect(edge.getSrc(), edge.getDest(), edge.getWeight());
+				results.get("add edge").setText(
+						"the edge has been added from src:" + (int) Double.parseDouble(parts[0]) + " to dest: " +
+						(int) Double.parseDouble(parts[1]) + " with wight:" + Double.parseDouble(parts[2]));
 			}
 			catch (Exception ignored) {
-
+				
 				results.get("add edge").setText("Something bad happened.");
 			}
 		});
 	}
-
+	
 	private void add_action_add_node() {
 		btns.get("add node").addActionListener(e -> {
 			String str = inputs.get("add node").getText();
-			results.get("add node").setText("");
+			String[] parts = str.split("[^\\d.]+", 0);
+			if ( parts.length != 4 ) {
+				results.get("add node").setText("enter id + location like: '1,3.5,3.234,0.0");
+				return;
+			}
 			try {
-				NodeData vertex = new Vertex(graph.getGraph().nodeSize()-1);
+				NodeData vertex = new Vertex(Integer.parseInt(parts[0]));
+				GeoLocation loc = new GeoLoc(Double.parseDouble(parts[1]),Double.parseDouble(parts[2]),Double.parseDouble(parts[3]));
 				graph.getGraph().addNode(vertex);
-				results.get("add node").setText("the node:"+(graph.getGraph().nodeSize()) + "has been added");
+				graph.getGraph().getNode(vertex.getKey()).setLocation(loc);
+				results.get("add node").setText("the node: " + Integer.parseInt(parts[0]) + " has been added");
+
 			}
 			catch (Exception ex) {
 				results.get("add node").setText("something bad happened");
 			}
 		});
 	}
-
+	
 	private void add_action_to_algo_tsp() {
 		btns.get("tsp").addActionListener(e -> {
 			String str = inputs.get("tsp").getText();

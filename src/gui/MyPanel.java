@@ -74,6 +74,7 @@ public class MyPanel extends JPanel {
         for (Iterator<NodeData> n = this.graph.nodeIter(); n.hasNext(); ) {
             node = n.next();
 
+
             for (Iterator<EdgeData> e = this.graph.edgeIter(node.getKey()); e.hasNext(); ) {
                 edge = e.next();
                 double weight = edge.getWeight();
@@ -88,6 +89,7 @@ public class MyPanel extends JPanel {
                 g2.drawString("id:" + id,  x1+50,  y1+40);
 
             }
+
         }
     }
 

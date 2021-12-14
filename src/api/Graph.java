@@ -133,6 +133,9 @@ public class Graph implements DirectedWeightedGraph {
     public Iterator<EdgeData> edgeIter(int node_id) {
         return this.edges.get(node_id).values().iterator();
     }
+    public Iterator<EdgeData> edgeIterOops(int node_id) {
+        return this.oppositeEdges.get(node_id).values().iterator();
+    }
 
     //Functions that remove data from the graph
     @Override //removeNode should be in O(1)
@@ -143,22 +146,23 @@ public class Graph implements DirectedWeightedGraph {
              * delete all the edges are there dst is the deleted vertex
              * we do it easyly becuse we save all the opposite edge so they all be in the vertex id key in the oppositeEdges hash
              */
-            for (Iterator<EdgeData> it = edgeIter(key); it.hasNext(); ){
+            for (Iterator<EdgeData> it = edgeIterOops(key); it.hasNext(); ){
                 EdgeData n = it.next();
-                oppositeEdges.remove(n.getDest());
+                edges.get(n.getDest()).remove(n.getSrc());
                 this.numofedges--;
                 this.counterMc++;
 
             }
-            this.edges.get(key).clear();
+
+            this.oppositeEdges.get(key).clear();
             /* delete all the edges are there src is the deleted vertex*/
             for (Iterator<EdgeData> it = edgeIter(key); it.hasNext(); ){
                 EdgeData n = it.next();
-                edges.remove(n.getDest());
+                edges.get(n.getDest()).remove(n.getSrc());
                 this.numofedges--;
                 this.counterMc++;
             }
-            this.oppositeEdges.get(key).clear();
+            this.edges.get(key).clear();
             this.edges.remove(key);
             this.oppositeEdges.remove(key);
             /* save the vertex for returning */
