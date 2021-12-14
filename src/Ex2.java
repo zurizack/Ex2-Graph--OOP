@@ -31,10 +31,6 @@ public class Ex2 {
         DirectedWeightedGraphAlgorithms ans = new Algo();
         ans.init(getGrapg(json_file));
         ans.load(json_file);
-//        ans.save(json_file);
-        // ****** Add your code here ******
-        //
-        // ********************************
         return ans;
     }
     /**
@@ -44,23 +40,12 @@ public class Ex2 {
      */
     public static void runGUI(String json_file) {
         DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
+        new MyLabel();
 
-        new MyPanel(alg.getGraph());
-        new FrameExtend(alg.getGraph());
-//        new MyLabel((DirectedWeightedGraphAlgorithms) alg.getGraph());
-
-        // ****** Add your code here ******
-        //
-        // ********************************
     }
 
     public static void main(String[]args){
-        DirectedWeightedGraphAlgorithms a = getGrapgAlgo("G1.json");
-//        System.out.println(a.isConnected());
-//        System.out.println(a.shortestPathDist(0,1));
-//        System.out.println(a.getGraph().getNode(0).getKey());
-//        runGUI("G1.json");
-        System.out.println("The center is: "+a.center().getKey());
+        runGUI("G1.json");
 
     }
 }
